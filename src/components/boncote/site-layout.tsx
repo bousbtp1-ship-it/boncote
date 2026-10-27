@@ -105,12 +105,9 @@ function MobileTabBar() {
         </span>
         Publier
       </Link>
-      <button type="button" className={item} onClick={() => comingSoon('La messagerie')}>
-        <MessageCircle className="size-5" /> Messages
-      </button>
-      <button type="button" className={item} onClick={() => comingSoon('La connexion')}>
-        <UserRound className="size-5" /> Compte
-      </button>
+      <Link to="/connexion" className={item}>
+  <UserRound className="size-5" /> Compte
+</Link>
     </nav>
   )
 }
