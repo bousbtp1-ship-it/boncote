@@ -51,14 +51,16 @@ function SiteHeader() {
               </span>
             )}
           </Link>
-          <button
-            type="button"
-            onClick={() => comingSoon('La messagerie')}
-            className="hidden flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground md:flex"
-          >
-            <MessageCircle className="size-5" /> Messages
-          </button>
           <Button
+  asChild
+  variant="outline"
+  className="h-10 rounded-lg font-semibold"
+>
+  <Link to="/connexion">
+    <UserRound />
+    <span className="hidden sm:inline">Se connecter</span>
+  </Link>
+</Button>
             variant="outline"
             className="h-10 rounded-lg font-semibold"
             onClick={() => comingSoon('La connexion')}
