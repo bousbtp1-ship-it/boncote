@@ -1,19 +1,19 @@
+import { useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Heart, MessageCircle, PlusSquare, Search, UserRound } from 'lucide-react'
-import { toast } from 'sonner'
-import { Button } from '@/components/ui/button'
+import { Heart, Search, UserRound, LogOut } from 'lucide-react'
 import { categories } from '@/data/fixtures'
 import { useFavorites } from '@/lib/favorites'
-import { CategoryIcon } from './category-icon'
+import { supabase } from '@/lib/supabase'
 import { Logo } from './logo'
 
-function comingSoon(feature: string) {
-  toast(`${feature} arrive très bientôt sur BONCOTE`)
-}
-
-export function SiteLayout({ children }: { children: React.ReactNode }) {
+export default function SiteLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
   return (
-    <div className="flex min-h-screen flex-col pb-16 md:pb-0">
+    <div className="flex min-h-screen flex-col pb-16">
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <SiteFooter />
@@ -24,126 +24,122 @@ export function SiteLayout({ children }: { children: React.ReactNode }) {
 
 function SiteHeader() {
   const favorites = useFavorites()
+  const [userEmail, setUserEmail] = useState<string | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUserEmail(data.session?.user.email ?? null)
+    })
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserEmail(session?.user.email ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    setUserEmail(null)
+    window.location.href = '/'
+  }
+
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-content items-center gap-4 px-4">
         <Logo />
-        <Button asChild className="ml-2 hidden h-10 rounded-lg px-4 font-semibold md:inline-flex">
-          <Link to="/deposer">
-            <PlusSquare /> Déposer une annonce
-          </Link>
-        </Button>
-        <nav className="ml-auto flex items-center gap-1">
-          <Link
-            to="/recherche"
-            className="hidden flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground md:flex"
-          >
-            <Search className="size-5" /> Rechercher
-          </Link>
-          <Link
-            to="/favoris"
-            className="relative hidden flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground md:flex"
-          >
-            <Heart className="size-5" /> Favoris
-            {favorites.length > 0 && (
-              <span className="absolute right-3 top-0.5 grid size-4 place-items-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                {favorites.length}
-              </span>
-            )}
-          </Link>
-          <Button
-  asChild
-  variant="outline"
-  className="h-10 rounded-lg font-semibold"
->
-  <Link to="/connexion">
-    <UserRound />
-    <span className="hidden sm:inline">Se connecter</span>
-  </Link>
-</Button>
-            variant="outline"
-            className="h-10 rounded-lg font-semibold"
-            onClick={() => comingSoon('La connexion')}
-          >
-            <UserRound /> <span className="hidden sm:inline">Se connecter</span>
-          </Button>
-        </nav>
-      </div>
-      <div className="hidden border-t md:block">
-        <nav className="mx-auto flex max-w-content items-center gap-6 overflow-x-auto px-4 text-sm">
-          {categories.map((c) => (
-            <Link
-              key={c.id}
-              to="/recherche"
-              search={{ categorie: c.id }}
-              className="flex h-10 shrink-0 items-center gap-1.5 border-b-2 border-transparent text-muted-foreground transition hover:border-primary hover:text-foreground"
-            >
-              <CategoryIcon id={c.id} className="size-4" /> {c.label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-    </header>
-  )
-}
 
-function MobileTabBar() {
-  const item =
-    'flex flex-1 flex-col items-center justify-center gap-0.5 text-[11px] font-medium text-muted-foreground'
-  const active = { className: 'text-primary' }
-  return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-16 border-t bg-card/95 backdrop-blur md:hidden">
-      <Link to="/recherche" className={item} activeProps={active}>
-        <Search className="size-5" /> Rechercher
-      </Link>
-      <Link to="/favoris" className={item} activeProps={active}>
-        <Heart className="size-5" /> Favoris
-      </Link>
-      <Link to="/deposer" className={item} activeProps={active}>
-        <span className="-mt-5 grid size-12 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-lg ring-4 ring-background">
-          <PlusSquare className="size-6" />
-        </span>
-        Publier
-      </Link>
-      <Link to="/connexion" className={item}>
-  <UserRound className="size-5" /> Compte
-</Link>
-    </nav>
+        <Link
+          to="/recherche"
+          className="ml-auto flex flex-col items-center gap-1 rounded-lg px-3 py-1.5 text-xs"
+        >
+          <Search className="size-5" />
+          <span>Rechercher</span>
+        </Link>
+
+        <Link
+          to="/favoris"
+          className="flex flex-col items-center gap-1 rounded-lg px-3 py-1.5 text-xs"
+        >
+          <Heart className="size-5" />
+          <span>Favoris</span>
+          {favorites.length > 0 && (
+            <span className="text-xs">{favorites.length}</span>
+          )}
+        </Link>
+
+        {userEmail ? (
+          <div className="flex items-center gap-2">
+            <span className="hidden max-w-32 truncate text-xs sm:inline">
+              {userEmail}
+            </span>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex flex-col items-center gap-1 rounded-lg px-3 py-1.5 text-xs"
+            >
+              <LogOut className="size-5" />
+              <span>Déconnexion</span>
+            </button>
+          </div>
+        ) : (
+          <Link
+            to="/connexion"
+            className="flex flex-col items-center gap-1 rounded-lg px-3 py-1.5 text-xs"
+          >
+            <UserRound className="size-5" />
+            <span>Se connecter</span>
+          </Link>
+        )}
+      </div>
+
+      <nav className="flex gap-4 overflow-x-auto border-t px-4 py-3">
+        {categories.map((category) => (
+          <Link
+            key={category.id}
+            to="/recherche"
+            className="shrink-0 text-sm"
+          >
+            {category.label}
+          </Link>
+        ))}
+      </nav>
+    </header>
   )
 }
 
 function SiteFooter() {
   return (
-    <footer className="mt-16 bg-ink text-ink-foreground">
-      <div className="mx-auto grid max-w-content gap-10 px-4 py-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-        <div className="space-y-3">
-          <Logo inverted />
-          <p className="max-w-xs text-sm text-ink-foreground/70">
-            Les petites annonces entre voisins, partout en France. Achetez, vendez, trouvez votre prochain job — près de chez vous.
-          </p>
-        </div>
-        <FooterCol title="Catégories" items={categories.map((c) => c.label)} />
-        <FooterCol title="BONCOTE" items={['Qui sommes-nous', 'Nous rejoindre', 'Espace presse']} />
-        <FooterCol title="Aide" items={['Centre d’aide', 'Conseils de sécurité', 'Conditions générales', 'Vie privée']} />
-      </div>
-      <div className="border-t border-ink-foreground/10">
-        <p className="mx-auto max-w-content px-4 py-5 text-xs text-ink-foreground/60">
-          © 2026 BONCOTE. Tous droits réservés.
+    <footer className="mt-12 border-t px-4 py-8 text-sm text-muted-foreground">
+      <div className="mx-auto max-w-content">
+        <Logo />
+        <p className="mt-3">
+          Les petites annonces entre voisins, partout en France.
         </p>
+        <p className="mt-4">© 2026 BONCOTE. Tous droits réservés.</p>
       </div>
     </footer>
   )
 }
 
-function FooterCol({ title, items }: { title: string; items: string[] }) {
+function MobileTabBar() {
   return (
-    <div>
-      <h4 className="mb-3 font-display text-sm font-bold uppercase tracking-wider text-ink-foreground/90">{title}</h4>
-      <ul className="space-y-2 text-sm text-ink-foreground/70">
-        {items.map((i) => (
-          <li key={i}>{i}</li>
-        ))}
-      </ul>
-    </div>
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t bg-background md:hidden">
+      <Link to="/recherche" className="flex flex-1 flex-col items-center gap-1 py-3 text-xs">
+        <Search className="size-5" />
+        Rechercher
+      </Link>
+      <Link to="/favoris" className="flex flex-1 flex-col items-center gap-1 py-3 text-xs">
+        <Heart className="size-5" />
+        Favoris
+      </Link>
+      <Link to="/connexion" className="flex flex-1 flex-col items-center gap-1 py-3 text-xs">
+        <UserRound className="size-5" />
+        Connexion
+      </Link>
+    </nav>
   )
 }
+

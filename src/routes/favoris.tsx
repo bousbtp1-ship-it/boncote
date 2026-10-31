@@ -2,7 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { Heart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ListingCard } from '@/components/boncote/listing-card'
-import { SiteLayout } from '@/components/boncote/site-layout'
+import SiteLayout from "@/components/boncote/site-layout";
 import { listings } from '@/data/fixtures'
 import { useFavorites } from '@/lib/favorites'
 

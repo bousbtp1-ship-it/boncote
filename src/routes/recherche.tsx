@@ -3,7 +3,7 @@ import { SearchX } from 'lucide-react'
 import { CategoryIcon } from '@/components/boncote/category-icon'
 import { ListingCard } from '@/components/boncote/listing-card'
 import { SearchBar } from '@/components/boncote/search-bar'
-import { SiteLayout } from '@/components/boncote/site-layout'
+import SiteLayout from "@/components/boncote/site-layout";
 import { categories, getCategory, listings, type CategoryId } from '@/data/fixtures'
 import { cn } from '@/lib/utils'
 
