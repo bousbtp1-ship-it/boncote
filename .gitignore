@@ -4,3 +4,6 @@ node_modules
 **/env.local
 output/
 .tanstack/
+dist/
+.output/
+.wrangler/
