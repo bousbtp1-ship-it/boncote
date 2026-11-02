@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as DeposerRouteImport } from './routes/deposer'
 import { Route as FavorisRouteImport } from './routes/favoris'
@@ -17,11 +18,17 @@ import { Route as MesAnnoncesRouteImport } from './routes/mes-annonces'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdminSignalementsRouteImport } from './routes/admin.signalements'
+import { Route as AdminUserRouteImport } from './routes/admin.user'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConnexionRoute = ConnexionRouteImport.update({
@@ -55,9 +62,14 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSignalementsRoute = AdminSignalementsRouteImport.update({
-  id: '/admin/signalements',
-  path: '/admin/signalements',
-  getParentRoute: () => rootRouteImport,
+  id: '/signalements',
+  path: '/signalements',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUserRoute = AdminUserRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AnnonceIdRoute = AnnonceIdRouteImport.update({
   id: '/annonce/$id',
@@ -67,6 +79,7 @@ const AnnonceIdRoute = AnnonceIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/connexion': typeof ConnexionRoute
   '/deposer': typeof DeposerRoute
   '/favoris': typeof FavorisRoute
@@ -74,10 +87,12 @@ export interface FileRoutesByFullPath {
   '/recherche': typeof RechercheRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin/signalements': typeof AdminSignalementsRoute
+  '/admin/user': typeof AdminUserRoute
   '/annonce/$id': typeof AnnonceIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/connexion': typeof ConnexionRoute
   '/deposer': typeof DeposerRoute
   '/favoris': typeof FavorisRoute
@@ -85,11 +100,13 @@ export interface FileRoutesByTo {
   '/recherche': typeof RechercheRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin/signalements': typeof AdminSignalementsRoute
+  '/admin/user': typeof AdminUserRoute
   '/annonce/$id': typeof AnnonceIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/connexion': typeof ConnexionRoute
   '/deposer': typeof DeposerRoute
   '/favoris': typeof FavorisRoute
@@ -97,12 +114,14 @@ export interface FileRoutesById {
   '/recherche': typeof RechercheRoute
   '/reset-password': typeof ResetPasswordRoute
   '/admin/signalements': typeof AdminSignalementsRoute
+  '/admin/user': typeof AdminUserRoute
   '/annonce/$id': typeof AnnonceIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/connexion'
     | '/deposer'
     | '/favoris'
@@ -110,10 +129,12 @@ export interface FileRouteTypes {
     | '/recherche'
     | '/reset-password'
     | '/admin/signalements'
+    | '/admin/user'
     | '/annonce/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/connexion'
     | '/deposer'
     | '/favoris'
@@ -121,10 +142,12 @@ export interface FileRouteTypes {
     | '/recherche'
     | '/reset-password'
     | '/admin/signalements'
+    | '/admin/user'
     | '/annonce/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/connexion'
     | '/deposer'
     | '/favoris'
@@ -132,18 +155,19 @@ export interface FileRouteTypes {
     | '/recherche'
     | '/reset-password'
     | '/admin/signalements'
+    | '/admin/user'
     | '/annonce/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ConnexionRoute: typeof ConnexionRoute
   DeposerRoute: typeof DeposerRoute
   FavorisRoute: typeof FavorisRoute
   MesAnnoncesRoute: typeof MesAnnoncesRoute
   RechercheRoute: typeof RechercheRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  AdminSignalementsRoute: typeof AdminSignalementsRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
 }
 
@@ -154,6 +178,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/connexion': {
@@ -200,10 +231,17 @@ declare module '@tanstack/react-router' {
     }
     '/admin/signalements': {
       id: '/admin/signalements'
-      path: '/admin/signalements'
+      path: '/signalements'
       fullPath: '/admin/signalements'
       preLoaderRoute: typeof AdminSignalementsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/user': {
+      id: '/admin/user'
+      path: '/user'
+      fullPath: '/admin/user'
+      preLoaderRoute: typeof AdminUserRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/annonce/$id': {
       id: '/annonce/$id'
@@ -215,15 +253,27 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminSignalementsRoute: typeof AdminSignalementsRoute
+  AdminUserRoute: typeof AdminUserRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminSignalementsRoute: AdminSignalementsRoute,
+  AdminUserRoute: AdminUserRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   ConnexionRoute: ConnexionRoute,
   DeposerRoute: DeposerRoute,
   FavorisRoute: FavorisRoute,
   MesAnnoncesRoute: MesAnnoncesRoute,
   RechercheRoute: RechercheRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  AdminSignalementsRoute: AdminSignalementsRoute,
   AnnonceIdRoute: AnnonceIdRoute,
 }
 export const routeTree = rootRouteImport

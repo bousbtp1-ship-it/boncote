@@ -274,3 +274,5 @@ export function getListing(id: string) {
 export function getCategory(id: string) {
   return categories.find((c) => c.id === id)
 }
+
+
