@@ -17,6 +17,7 @@ import { Route as FavorisRouteImport } from './routes/favoris'
 import { Route as MesAnnoncesRouteImport } from './routes/mes-annonces'
 import { Route as RechercheRouteImport } from './routes/recherche'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminSignalementsRouteImport } from './routes/admin.signalements'
 import { Route as AdminUserRouteImport } from './routes/admin.user'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
@@ -61,6 +62,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSignalementsRoute = AdminSignalementsRouteImport.update({
   id: '/signalements',
   path: '/signalements',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/mes-annonces': typeof MesAnnoncesRoute
   '/recherche': typeof RechercheRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/signalements': typeof AdminSignalementsRoute
   '/admin/user': typeof AdminUserRoute
   '/annonce/$id': typeof AnnonceIdRoute
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/mes-annonces': typeof MesAnnoncesRoute
   '/recherche': typeof RechercheRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/signalements': typeof AdminSignalementsRoute
   '/admin/user': typeof AdminUserRoute
   '/annonce/$id': typeof AnnonceIdRoute
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/mes-annonces': typeof MesAnnoncesRoute
   '/recherche': typeof RechercheRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/signalements': typeof AdminSignalementsRoute
   '/admin/user': typeof AdminUserRoute
   '/annonce/$id': typeof AnnonceIdRoute
@@ -128,6 +137,7 @@ export interface FileRouteTypes {
     | '/mes-annonces'
     | '/recherche'
     | '/reset-password'
+    | '/admin/categories'
     | '/admin/signalements'
     | '/admin/user'
     | '/annonce/$id'
@@ -141,6 +151,7 @@ export interface FileRouteTypes {
     | '/mes-annonces'
     | '/recherche'
     | '/reset-password'
+    | '/admin/categories'
     | '/admin/signalements'
     | '/admin/user'
     | '/annonce/$id'
@@ -154,6 +165,7 @@ export interface FileRouteTypes {
     | '/mes-annonces'
     | '/recherche'
     | '/reset-password'
+    | '/admin/categories'
     | '/admin/signalements'
     | '/admin/user'
     | '/annonce/$id'
@@ -229,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/signalements': {
       id: '/admin/signalements'
       path: '/signalements'
@@ -254,11 +273,13 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminSignalementsRoute: typeof AdminSignalementsRoute
   AdminUserRoute: typeof AdminUserRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
   AdminSignalementsRoute: AdminSignalementsRoute,
   AdminUserRoute: AdminUserRoute,
 }
