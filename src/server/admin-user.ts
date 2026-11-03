@@ -10,11 +10,21 @@ type UserInput = AdminInput & {
   userId: string
 }
 
+type RuntimeEnvKey =
+  | 'VITE_SUPABASE_URL'
+  | 'VITE_SUPABASE_ANON_KEY'
+  | 'SUPABASE_SERVICE_ROLE_KEY'
+
+function getRuntimeEnv(name: RuntimeEnvKey): string | undefined {
+  const cloudflareEnv = env as Record<string, unknown>
+  const value = cloudflareEnv[name]
+
+  return typeof value === 'string' ? value : undefined
+}
+
 function getAdminClient() {
-  const url = env.VITE_SUPABASE_URL
-  const key = (env as typeof env & {
-    SUPABASE_SERVICE_ROLE_KEY: string
-  }).SUPABASE_SERVICE_ROLE_KEY
+  const url = getRuntimeEnv('VITE_SUPABASE_URL')
+  const key = getRuntimeEnv('SUPABASE_SERVICE_ROLE_KEY')
 
   if (!url) {
     throw new Error('Variable manquante: VITE_SUPABASE_URL')
@@ -33,8 +43,8 @@ function getAdminClient() {
 }
 
 async function verifyAdmin(accessToken: string) {
-  const url = env.VITE_SUPABASE_URL
-  const anonKey = env.VITE_SUPABASE_ANON_KEY
+  const url = getRuntimeEnv('VITE_SUPABASE_URL')
+  const anonKey = getRuntimeEnv('VITE_SUPABASE_ANON_KEY')
 
   if (!url) {
     throw new Error('Variable manquante: VITE_SUPABASE_URL')
@@ -77,11 +87,10 @@ export const listAdminUsers = createServerFn({ method: 'POST' })
   .handler(async ({ data }) => {
     const client = await verifyAdmin(data.accessToken)
 
-    const { data: result, error } =
-      await client.auth.admin.listUsers({
-        page: 1,
-        perPage: 1000,
-      })
+    const { data: result, error } = await client.auth.admin.listUsers({
+      page: 1,
+      perPage: 1000,
+    })
 
     if (error) throw error
 

@@ -1,10 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "boncote",
-"account_id": "fd31e2d2a62a5f687849b67a55492a38",
+  "account_id": "fd31e2d2a62a5f687849b67a55492a38",
   "compatibility_date": "2026-10-23",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "main": "@tanstack/react-start/server-entry",
+  "keep_vars": true,
+  "vars": {
+    "VITE_SUPABASE_URL": "https://fvivqwnjtbekenujfczx.supabase.co",
+    "VITE_SUPABASE_ANON_KEY": "sb_publishable_vNLP5RwKghFdMov7YDwy4Q_8nrJjTyj"
+  },
   "observability": {
     "enabled": true
   }
