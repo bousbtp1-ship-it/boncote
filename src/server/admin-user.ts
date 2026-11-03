@@ -12,10 +12,16 @@ type UserInput = AdminInput & {
 
 function getAdminClient() {
   const url = env.VITE_SUPABASE_URL
-  const key = (env as typeof env & { SUPABASE_SERVICE_ROLE_KEY: string }).SUPABASE_SERVICE_ROLE_KEY
+  const key = (env as typeof env & {
+    SUPABASE_SERVICE_ROLE_KEY: string
+  }).SUPABASE_SERVICE_ROLE_KEY
 
-  if (!url || !key) {
-    throw new Error('Configuration Supabase manquante.')
+  if (!url) {
+    throw new Error('Variable manquante: VITE_SUPABASE_URL')
+  }
+
+  if (!key) {
+    throw new Error('Variable manquante: SUPABASE_SERVICE_ROLE_KEY')
   }
 
   return createClient(url, key, {
@@ -30,8 +36,12 @@ async function verifyAdmin(accessToken: string) {
   const url = env.VITE_SUPABASE_URL
   const anonKey = env.VITE_SUPABASE_ANON_KEY
 
-  if (!url || !anonKey) {
-    throw new Error('Configuration Supabase manquante.')
+  if (!url) {
+    throw new Error('Variable manquante: VITE_SUPABASE_URL')
+  }
+
+  if (!anonKey) {
+    throw new Error('Variable manquante: VITE_SUPABASE_ANON_KEY')
   }
 
   const supabase = createClient(url, anonKey, {
@@ -148,6 +158,4 @@ export const unbanAdminUser = createServerFn({ method: 'POST' })
 
     return { success: true }
   })
-
-
 
