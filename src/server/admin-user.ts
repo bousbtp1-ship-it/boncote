@@ -16,10 +16,20 @@ type RuntimeEnvKey =
   | 'SUPABASE_SERVICE_ROLE_KEY'
 
 function getRuntimeEnv(name: RuntimeEnvKey): string | undefined {
-  const cloudflareEnv = env as Record<string, unknown>
-  const value = cloudflareEnv[name]
+  const sources: Array<Record<string, unknown> | undefined> = [
+    env as unknown as Record<string, unknown>,
+    typeof process !== 'undefined'
+      ? (process.env as Record<string, unknown>)
+      : undefined,
+    import.meta.env as unknown as Record<string, unknown>,
+  ]
 
-  return typeof value === 'string' ? value : undefined
+  for (const source of sources) {
+    const value = source?.[name]
+    if (typeof value === 'string' && value) return value
+  }
+
+  return undefined
 }
 
 function getAdminClient() {
@@ -167,4 +177,3 @@ export const unbanAdminUser = createServerFn({ method: 'POST' })
 
     return { success: true }
   })
-
