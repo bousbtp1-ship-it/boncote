@@ -66,6 +66,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster />
         <Scripts />
+
+        {/* Cloudflare Web Analytics */}
+        <script
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "391aa53b94de42f6bbfda297a5cc436f"}'
+        />
+
       </body>
     </html>
   )
