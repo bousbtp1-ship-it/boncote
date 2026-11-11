@@ -1,3 +1,4 @@
+
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "boncote",
@@ -6,11 +7,11 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
-  "main": "@tanstack/react-start/server-entry",
+  "main": "src/server.ts",
   "keep_vars": true,
   "vars": {
     "VITE_SUPABASE_URL": "https://fvivqwnjtbekenujfczx.supabase.co",
-    "VITE_SUPABASE_ANON_KEY": "sb_publishable_vNLP5RwKghFdMov7YDwy4Q_8nrJjTyj"
+    "VITE_SUPABASE_ANON_KEY": "sb_publishable_vNLP5RwKghFdMov7YDwy4Q_8nr3jTyj"
   },
   "observability": {
     "enabled": true
