@@ -15,5 +15,11 @@
   },
   "observability": {
     "enabled": true
+  },
+  "previews": {
+    "vars": {
+      "VITE_SUPABASE_URL": "https://preview.invalid",
+      "VITE_SUPABASE_ANON_KEY": "preview-placeholder-not-a-real-key"
+    }
   }
 }
