@@ -18,8 +18,8 @@
   },
   "previews": {
     "vars": {
-      "VITE_SUPABASE_URL": "https://preview.invalid",
-      "VITE_SUPABASE_ANON_KEY": "preview-placeholder-not-a-real-key"
+      "VITE_SUPABASE_URL": "https://fvivqwnjtbekenujfczx.supabase.co",
+      "VITE_SUPABASE_ANON_KEY": "sb_publishable_vNLP5RwKghFdMov7YDwy4Q_8nr3jTyj"
     }
   }
 }
